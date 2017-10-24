@@ -27,4 +27,4 @@ jobs:
           name: テスト
           command: curl --retry 10 --retry-delay 5 localhost:80 | grep "Hello World!"
       - deploy:
-          command: ./deploy.sh
+          command: sh ./deploy.sh
