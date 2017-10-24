@@ -1,18 +1,28 @@
-machine:
-  services:
-    - docker
-
-dependencies:
-  post:
-    - docker build -t $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/nginx-sample-webapp:$CIRCLE_SHA1 .
-
-test:
-  post:
-    - docker run -d -p 80:80 --name nginx-sample-webapp $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/nginx-sample-webapp:$CIRCLE_SHA1; sleep 10
-    - curl --retry 10 --retry-delay 5 localhost:80 | grep "Hello World!"
-
-deployment:
-  prod:
-    branch: master
-    commands:
-      - ./deploy.sh
+version: 2
+jobs:
+  build:
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - my-docker-cache-{{ .Branch }}
+            - my-docker-cache
+      # 2. キャッシュイメージ読み込み
+      - run: if test -d ~/cache; then docker load -i ~/cache/image.tar; fi
+      # 3. ビルド
+      - run: docker build -t $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/test-nginx:$CIRCLE_SHA1 .
+      # 4. イメージ書き出し
+      - run: mkdir -p ~/cache && docker save -o ~/cache/image.tar my-image $(docker history -q my-image | tail -n +2 | grep -v \<missing\> | tr '\n' ' ')
+      # 5. キャッシュ保存
+      - save_cache:
+          key: my-docker-cache-{{ .Branch }}-{{ checksum "~/cache/image.tar" }}
+          paths:
+            - ~/cache
+      - run:
+          name: RUN
+          command: docker run -d -p 80:80 --name test-nginx $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/test-nginx:$CIRCLE_SHA1; sleep 10
+      - run:
+          name: テスト
+          command: curl --retry 10 --retry-delay 5 localhost:80 | grep "Hello World!"
+      - deploy:
+          command: ./deploy.sh
