@@ -2,6 +2,7 @@ version: 2
 jobs:
   build:
     machine: true
+    working_directory: ~/test-circleci
     steps:
       - checkout
       - restore_cache:
