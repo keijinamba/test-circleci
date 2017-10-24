@@ -13,7 +13,7 @@ jobs:
       # 3. ビルド
       - run: docker build -t $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/test-nginx:$CIRCLE_SHA1 .
       # 4. イメージ書き出し
-      - run: mkdir -p ~/cache && docker save -o ~/cache/image.tar my-image $(docker history -q my-image | tail -n +2 | grep -v \<missing\> | tr '\n' ' ')
+      - run: mkdir -p ~/cache && docker save -o ~/cache/image.tar test-nginx $(docker history -q test-nginx | tail -n +2 | grep -v \<missing\> | tr '\n' ' ')
       # 5. キャッシュ保存
       - save_cache:
           key: my-docker-cache-{{ .Branch }}-{{ checksum "~/cache/image.tar" }}
