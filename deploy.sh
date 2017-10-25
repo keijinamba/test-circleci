@@ -81,6 +81,9 @@ register_definition() {
 
 }
 
+echo "--------- call configure_aws_cli ---------"
 configure_aws_cli
+echo "--------- call push_ecr_image ---------"
 push_ecr_image
+echo "--------- call deploy_cluster ---------"
 deploy_cluster
