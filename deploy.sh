@@ -67,7 +67,7 @@ deploy_cluster() {
 
 push_ecr_image(){
 	eval $(aws ecr get-login --region ${AWS_DEFAULT_REGION})
-	docker push $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/${AWS_ECR_REP_NAME}:$CIRCLE_SHA1
+	# docker push $AWS_ACCOUNT_ID.dkr.ecr.ap-northeast-1a.amazonaws.com/${AWS_ECR_REP_NAME}:$CIRCLE_SHA1
 }
 
 register_definition() {
