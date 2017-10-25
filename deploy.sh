@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # valiabls
-AWS_DEFAULT_REGION=ap-northeast-1a
+AWS_DEFAULT_REGION=ap-northeast-1
 AWS_ECS_TASKDEF_NAME=test-nginx-task
 AWS_ECS_CLUSTER_NAME=test-nginx-cluster
 AWS_ECS_SERVICE_NAME=test-nginx-service
